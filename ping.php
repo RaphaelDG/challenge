@@ -5,11 +5,33 @@
 </form>
 
 <?php
+$blacklist = file("security.php", FILE_IGNORE_NEW_LINES);
+$hackerDetected = false;
+
 if(isset($_POST['submit'])) 
 {
     $adresse = $_POST['adresse'];
-    echo "Vous avez fait un ping sur : <b> $adresse </b>"; 
-    $output = shell_exec('ping -c 4 '.$adresse);
-    echo "<pre>$output</pre>";
+    
+    foreach($blacklist as $value)
+    {
+        $pos = strpos($adresse, $value);
+    }
+	if($pos != false)
+	{
+	    $hackerDetected = true;
+	}
+    
+
+    if($hackerDetected === false)
+    {
+        echo "Vous avez fait un ping sur : <b> $adresse </b>";  
+        $output = shell_exec('ping -c 4 '.$adresse);
+        echo "<pre>$output</pre>";
+
+    }
+    else
+    {
+	echo"Hacker detected! <br>";
+    }
 }
 ?>
